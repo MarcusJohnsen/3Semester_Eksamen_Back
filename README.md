@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/KumaSudosa/CA3-Back-Own.svg?branch=master)](https://travis-ci.org/KumaSudosa/CA3-Back-Own)
+[![Build Status](https://travis-ci.org/MarcusJohnsen/3Semester_Eksamen_Back.svg?branch=master)](https://travis-ci.org/MarcusJohnsen/3Semester_Eksamen_Back)
 
 # Group 3 - CA3
 *This project is the startcode written by Group 3 for the CA3-assignment*
