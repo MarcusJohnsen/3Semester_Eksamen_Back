@@ -3,11 +3,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>dat.sem3.security</groupId>
-    <artifactId>CA3-Gruppe3-Marcus</artifactId>
+    <artifactId>Semester3-Eksamen-Marcus</artifactId>
     <version>1</version>
     <packaging>war</packaging>
 
-    <name>CA3-Gruppe3-Marcus</name>
+    <name>Semester3-Eksamen-Marcus</name>
 
     <properties>
         <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
