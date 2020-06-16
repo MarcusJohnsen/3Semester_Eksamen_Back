@@ -1,5 +1,6 @@
 package rest;
 
+import dto.RecipeDTO;
 import dto.RecipesDTO;
 import entities.Recipe;
 import entities.Role;
@@ -17,6 +18,7 @@ import org.glassfish.jersey.server.ResourceConfig;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -139,11 +141,87 @@ public class RecipeResourceTest {
                 .contentType("application/json")
                 .header("x-access-token", securityToken)
                 .when()
-                .get("/rec/allRecipes").then()
+                .get("/rec/all").then()
                 .statusCode(200)
                 .extract().body().as(RecipesDTO.class);
 
         int expectedSize = recipeArray.length;
         assertEquals(expectedSize, result.getRecipes().size());
+    }
+    
+    //test to correctly delete a recipe as admin
+    @Test
+    public void testDeleteRecipe_admin() {
+        User user = u2;
+        login(user.getUserName(), p2);
+        
+        given()
+                .contentType("application/json")
+                .header("x-access-token", securityToken)
+                .when()
+                .delete("/rec/" + rec2.getId()).then()
+                .statusCode(204);
+
+        RecipesDTO result = given()
+                .contentType("application/json")
+                .header("x-access-token", securityToken)
+                .when()
+                .get("/rec/all").then()
+                .statusCode(200)
+                .extract().body().as(RecipesDTO.class);
+
+        int expectedLength = recipeArray.length - 1;
+        assertEquals(expectedLength, result.getRecipes().size());
+    }
+    
+    //test to ensure that the user role cannot delete recipes
+    @Test
+    public void testNegativeDeleteRecipe_user() {
+        User user = u1;
+        login(user.getUserName(), p1);
+        
+        given()
+                .contentType("application/json")
+                .header("x-access-token", securityToken)
+                .when()
+                .delete("/rec/" + rec2.getId()).then()
+                .statusCode(401);
+    }
+    
+    @Test
+    public void testEditRecipe_admin() {
+        User user = u2;
+        login(user.getUserName(), p2);
+        RecipeDTO expectedResult = new RecipeDTO(rec2);
+        expectedResult.setDirections("just eat it raw.");
+        expectedResult.setPreparationTime("0 minutes if you eat it raw!");
+        
+        given()
+                .contentType("application/json")
+                .header("x-access-token", securityToken) 
+                .body(expectedResult)
+                .when()
+                .put("/rec/edit").then()
+                .statusCode(200)
+                .extract().body().as(RecipeDTO.class);
+        
+        RecipesDTO results = given()
+                .contentType("application/json")
+                .header("x-access-token", securityToken)
+                .when()
+                .get("/rec/all").then()
+                .statusCode(200)
+                .extract().body().as(RecipesDTO.class);
+
+        RecipeDTO result = null;
+        for (RecipeDTO rec : results.getRecipes()) {
+            if (rec.getId().equals(expectedResult.getId())) {
+                result = rec;
+                break;
+            }
+        }
+        assertNotNull(result);
+        assertEquals(expectedResult.getDirections(), result.getDirections());
+        assertEquals(expectedResult.getPreparationTime(), result.getPreparationTime());
     }
 }

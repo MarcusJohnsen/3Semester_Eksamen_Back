@@ -63,4 +63,33 @@ public class RecipeFacade {
             em.close();
         }
     }
+    
+    public RecipeDTO editRecipe(RecipeDTO recipe) {
+        EntityManager em = emf.createEntityManager();
+        try{
+            em.getTransaction().begin();
+            Recipe rec = em.find(Recipe.class, recipe.getId());
+            rec.setRecipeName(recipe.getRecipeName());
+            rec.setPreparationTime(recipe.getPreparationTime());
+            rec.setDirections(recipe.getDirections());
+            //rec.setIngredientList(recipe.);
+            em.getTransaction().commit();
+            RecipeDTO result = new RecipeDTO(rec);
+            return result;
+        }finally{  
+            em.close();
+        }
+    }
+    
+    public void deleteRecipe(Long id) {
+        EntityManager em = emf.createEntityManager();
+        try {
+            Recipe rec = em.find(Recipe.class, id);
+            em.getTransaction().begin();
+            em.remove(rec);
+            em.getTransaction().commit();
+        } finally {
+            em.close();
+        }
+    }
 }

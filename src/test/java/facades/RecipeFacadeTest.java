@@ -4,13 +4,16 @@ import dto.RecipeDTO;
 import dto.RecipesDTO;
 import entities.Recipe;
 import entities.User;
+import java.util.List;
 import utils.EMF_Creator;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -129,5 +132,36 @@ public class RecipeFacadeTest {
         assertTrue(result.getRecipeName().equals(recipeDTO.getRecipeName()));
         assertTrue(result.getPreparationTime().equals(recipeDTO.getPreparationTime()));
         assertTrue(result.getDirections().equals(recipeDTO.getDirections()));
+    }
+    
+    @Test
+    public void testEditRecipe() {
+        Recipe recipe = rec2;
+        RecipeDTO rec = new RecipeDTO(recipe);
+        rec.setDirections("Don't use the pan, use the oven!");
+        rec.setRecipeName("Schnitzel");
+        RecipeDTO result = facade.editRecipe(rec);
+
+        assertTrue(result.getDirections().equals(rec.getDirections()));
+        assertTrue(result.getRecipeName().equals(rec.getRecipeName()));
+        assertFalse(result.getDirections().equals(recipe.getDirections()));
+        assertFalse(result.getRecipeName().equals(recipe.getRecipeName()));
+    }
+    
+    @Test
+    public void testDeleteRecipe() {
+        Recipe recipe = rec2;
+        facade.deleteRecipe(recipe.getId());
+        int expectedResult = recipeArray.length -1;
+
+        EntityManager em = emf.createEntityManager();
+        try {
+            List<Recipe> dbResult = em.createQuery("Select r FROM Recipe r", Recipe.class).getResultList();
+            assertEquals(dbResult.size(), expectedResult);
+        } catch (Exception e) {
+            fail(e.getMessage());
+        } finally {
+            em.close();
+        }
     }
 }
