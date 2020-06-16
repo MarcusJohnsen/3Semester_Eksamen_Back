@@ -1,6 +1,7 @@
 package facades;
 
 import dto.RecipeDTO;
+import dto.RecipesDTO;
 import entities.Recipe;
 import entities.User;
 import utils.EMF_Creator;
@@ -105,7 +106,18 @@ public class RecipeFacadeTest {
     
     @Test
     public void testRecipeCount() {
-        assertEquals(3, facade.getRecipeCount(), "Expects three rows in the database");
+        int expectedResult = recipeArray.length;
+        
+        assertEquals(expectedResult, facade.getRecipeCount());
+    }
+    
+    @Test
+    public void testGetAllRecipes() {
+        RecipesDTO result = facade.getRecipes();
+        
+        int expectedResult = recipeArray.length;
+        
+        assertEquals(expectedResult, result.getRecipes().size());
     }
 
     @Test

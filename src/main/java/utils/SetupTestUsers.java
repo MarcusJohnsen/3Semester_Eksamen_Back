@@ -20,9 +20,9 @@ public class SetupTestUsers {
     // Also, either delete this file, when users are created or rename and add to .gitignore
     // Whatever you do DO NOT COMMIT and PUSH with the real passwords
 
-    User user = new User("user", "PwTest123");
-    User admin = new User("admin", "PwTest123");
-    User both = new User("user_admin", "PwTest123");
+    User user = new User("user", "test123");
+    User admin = new User("admin", "test123");
+    User both = new User("user_admin", "test123");
 
     if(admin.getUserPass().equals("PwTest123")||user.getUserPass().equals("PwTest123")||both.getUserPass().equals("PwTest123"))
       throw new UnsupportedOperationException("You have not changed the passwords");
