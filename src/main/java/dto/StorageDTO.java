@@ -1,6 +1,6 @@
 package dto;
 
-public class OfficialJokeDTO {
+public class StorageDTO {
     
     private final static String JOKE_URL = "https://official-joke-api.appspot.com/random_joke";
     private String id;
@@ -8,10 +8,10 @@ public class OfficialJokeDTO {
     private String setup;
     private String punchline;
 
-    public OfficialJokeDTO() {
+    public StorageDTO() {
     }
 
-    public OfficialJokeDTO(String id, String type, String setup, String punchline) {
+    public StorageDTO(String id, String type, String setup, String punchline) {
         this.id = id;
         this.type = type;
         this.setup = setup;

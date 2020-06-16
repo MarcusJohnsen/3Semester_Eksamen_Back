@@ -1,15 +1,15 @@
 package dto;
 
-public class DadJokeDTO {
+public class ItemDTO {
     
     private final static String RANDOM_URL = "https://icanhazdadjoke.com";
     private String joke;
     private String id;
 
-    public DadJokeDTO() {
+    public ItemDTO() {
     }
 
-    public DadJokeDTO(String joke, String id) {
+    public ItemDTO(String joke, String id) {
         this.joke = joke;
         this.id = id;
     }
