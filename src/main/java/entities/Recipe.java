@@ -8,9 +8,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 
 @Entity
+@NamedQuery(name = "Recipe.deleteAllRows", query = "DELETE from Recipe")
 public class Recipe implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -18,6 +20,9 @@ public class Recipe implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
+    /*In the task description there's no option to give recipes a recipeName.
+    To me that makes sense to add */
+    private String recipeName;
     //String so you can write it like "10 min prep time"
     private String preparationTime;
     private String directions;
@@ -30,13 +35,15 @@ public class Recipe implements Serializable {
 
     public Recipe() {}
     
-    public Recipe(String preparationTime, String directions) {
+    public Recipe(String recipeName, String preparationTime, String directions) {
+        this.recipeName = recipeName;
         this.preparationTime = preparationTime;
         this.directions = directions;
     }
 
-    public Recipe(Long id, String preparationTime, String directions) {
+    public Recipe(Long id, String recipeName, String preparationTime, String directions) {
         this.id = id;
+        this.recipeName = recipeName;
         this.preparationTime = preparationTime;
         this.directions = directions;
     }
@@ -47,6 +54,14 @@ public class Recipe implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getRecipeName() {
+        return recipeName;
+    }
+
+    public void setRecipeName(String recipeName) {
+        this.recipeName = recipeName;
     }
 
     public String getPreparationTime() {

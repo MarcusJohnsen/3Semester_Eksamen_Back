@@ -3,11 +3,9 @@ package facades;
 import dto.RecipeDTO;
 import dto.RecipesDTO;
 import entities.Recipe;
-import entities.User;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 import javax.persistence.TypedQuery;
 
 public class RecipeFacade {
@@ -55,7 +53,7 @@ public class RecipeFacade {
     public RecipeDTO addRecipe(RecipeDTO recipe) {
         EntityManager em = emf.createEntityManager();
         try {
-            Recipe rec = new Recipe(recipe.getPreparationTime(), recipe.getDirections());
+            Recipe rec = new Recipe(recipe.getRecipeName(), recipe.getPreparationTime(), recipe.getDirections());
             em.getTransaction().begin();
             em.persist(rec);
             em.getTransaction().commit();

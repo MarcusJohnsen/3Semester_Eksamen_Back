@@ -5,24 +5,28 @@ import entities.Recipe;
 public class RecipeDTO {
     
     private Long id;
+    private String recipeName;
     private String preparationTime;
     private String directions;
 
     public RecipeDTO() {}
     
-    public RecipeDTO(String preparationTime, String directions) {
+    public RecipeDTO(String recipeName, String preparationTime, String directions) {
+        this.recipeName = recipeName;
         this.preparationTime = preparationTime;
         this.directions = directions;
     }
 
-    public RecipeDTO(Long id, String preparationTime, String directions) {
+    public RecipeDTO(Long id, String recipeName, String preparationTime, String directions) {
         this.id = id;
+        this.recipeName = recipeName;
         this.preparationTime = preparationTime;
         this.directions = directions;
     }
     
     public RecipeDTO(Recipe recipe) {
         this.id = recipe.getId();
+        this.recipeName = recipe.getRecipeName();
         this.preparationTime = recipe.getPreparationTime();
         this.directions = recipe.getDirections();
     }
@@ -34,6 +38,14 @@ public class RecipeDTO {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getRecipeName() {
+        return recipeName;
+    }
+
+    public void setRecipeName(String recipeName) {
+        this.recipeName = recipeName;
     }
 
     public String getPreparationTime() {
