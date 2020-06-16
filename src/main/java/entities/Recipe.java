@@ -40,7 +40,7 @@ public class Recipe implements Serializable {
         this.preparationTime = preparationTime;
         this.directions = directions;
     }
-
+    
     public Recipe(Long id, String recipeName, String preparationTime, String directions) {
         this.id = id;
         this.recipeName = recipeName;

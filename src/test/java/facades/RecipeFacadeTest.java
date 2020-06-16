@@ -4,6 +4,8 @@ import dto.RecipeDTO;
 import dto.RecipesDTO;
 import entities.Recipe;
 import entities.User;
+import entities.WeeklyMenuPlan;
+import errorhandling.InvalidInputException;
 import java.util.List;
 import utils.EMF_Creator;
 import javax.persistence.EntityManager;
@@ -26,6 +28,7 @@ public class RecipeFacadeTest {
     private static RecipeFacade facade;
     private static Recipe rec1, rec2, rec3;
     private static Recipe[] recipeArray;
+    private static WeeklyMenuPlan wPlan1, wPlan2;
     private static User u1, u2;
     private static String p1, p2;
 
@@ -76,11 +79,15 @@ public class RecipeFacadeTest {
             rec1 = new Recipe("spaghetti", "ca. 20 min", "Cook until al dente!");
             rec2 = new Recipe("cordon bleu", "ca. 25 min", "Put on the pan for 25 mins, that's it");
             rec3 = new Recipe("svickova", "2 hours", "Just leave the meat in the oven for 1 and a half hours and make the omacku");
+            wPlan1 = new WeeklyMenuPlan("Week 28", "year 2020");
+            wPlan2 = new WeeklyMenuPlan("Week 29", "year 2020");
             em.persist(u1);
             em.persist(u2);
             em.persist(rec1);
             em.persist(rec2);
             em.persist(rec3);
+            em.persist(wPlan1);
+            em.persist(wPlan2);
             em.getTransaction().commit();
         } finally {
             em.close();
@@ -158,6 +165,25 @@ public class RecipeFacadeTest {
         try {
             List<Recipe> dbResult = em.createQuery("Select r FROM Recipe r", Recipe.class).getResultList();
             assertEquals(dbResult.size(), expectedResult);
+        } catch (Exception e) {
+            fail(e.getMessage());
+        } finally {
+            em.close();
+        }
+    }
+    
+    @Test
+    public void testAddRecipeToWeeklyMenuPlan() throws InvalidInputException {
+        Recipe recipe = rec2;
+        WeeklyMenuPlan wPlan = wPlan2;
+        facade.addRecipeToWeeklyMenuPlan(wPlan.getId(), recipe.getId());
+
+        EntityManager em = emf.createEntityManager();
+        try {
+            WeeklyMenuPlan week28 = em.find(WeeklyMenuPlan.class, wPlan.getId());
+            List<Recipe> dbResult = week28.getSevenRecipesList();
+            int ExpectedResultForUser = 1;
+            assertEquals(ExpectedResultForUser, dbResult.size());
         } catch (Exception e) {
             fail(e.getMessage());
         } finally {

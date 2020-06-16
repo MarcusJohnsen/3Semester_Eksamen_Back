@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import dto.RecipeDTO;
 import dto.RecipesDTO;
+import errorhandling.InvalidInputException;
 import utils.EMF_Creator;
 import facades.RecipeFacade;
 import javax.annotation.security.RolesAllowed;
@@ -57,6 +58,16 @@ public class RecipeResource {
         return GSON.toJson(allRecipes);
     }
     
+    @PUT
+    @Path("/edit")
+    @RolesAllowed({"admin"})
+    @Produces({MediaType.APPLICATION_JSON})
+    public String editRecipe(String recipe) {
+        RecipeDTO changedRecipe = GSON.fromJson(recipe, RecipeDTO.class);
+        FACADE.editRecipe(changedRecipe);
+        return GSON.toJson(changedRecipe);
+    }
+    
     @DELETE
     @Path("/{id}")
     @RolesAllowed({"admin"})
@@ -66,13 +77,15 @@ public class RecipeResource {
         FACADE.deleteRecipe(id);
     }
     
+    //opgaven siger "the chef" gerne vil.. jeg antager han er admin
+    //jeg er ikke i tvivl om dette er... uskøn kode, men det bedste jeg kunne finde på under presset
     @PUT
-    @Path("/edit")
+    @Path("/weeklyPlan/{id}")
     @RolesAllowed({"admin"})
     @Produces({MediaType.APPLICATION_JSON})
-    public String editRecipe(String recipe) {
-        RecipeDTO changedRecipe = GSON.fromJson(recipe, RecipeDTO.class);
-        FACADE.editRecipe(changedRecipe);
-        return GSON.toJson(changedRecipe);
+    public String addRecipeToWeeklyPlan(@PathParam("id")long id, String recipe) throws InvalidInputException {
+        RecipeDTO addedRecipe = GSON.fromJson(recipe, RecipeDTO.class);
+        RecipeDTO recipeResult = FACADE.addRecipeToWeeklyMenuPlan(id, addedRecipe.getId());
+        return GSON.toJson(recipeResult);
     }
 }

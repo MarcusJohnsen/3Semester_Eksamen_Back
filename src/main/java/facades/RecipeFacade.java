@@ -3,6 +3,8 @@ package facades;
 import dto.RecipeDTO;
 import dto.RecipesDTO;
 import entities.Recipe;
+import entities.WeeklyMenuPlan;
+import errorhandling.InvalidInputException;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -88,6 +90,52 @@ public class RecipeFacade {
             em.getTransaction().begin();
             em.remove(rec);
             em.getTransaction().commit();
+        } finally {
+            em.close();
+        }
+    }
+    
+    //mest for at vise at jeg kan lave errorhandling. Laver det flere steder hvis jeg har tiden
+    public RecipeDTO addRecipeToWeeklyMenuPlan(Long id, Long id2) throws InvalidInputException {
+        EntityManager em = emf.createEntityManager();
+        try {
+            em.getTransaction().begin();
+            WeeklyMenuPlan week28 = em.find(WeeklyMenuPlan.class, id);
+            Recipe chosenRec = em.find(Recipe.class, id2);
+            if(!week28.getSevenRecipesList().contains(chosenRec)){
+            week28.getSevenRecipesList().add(chosenRec);    
+            }
+            em.getTransaction().commit();
+            RecipeDTO newRecipe = new RecipeDTO(chosenRec);
+            return newRecipe;
+        } catch (NullPointerException e) {
+            throw new InvalidInputException("This recipe does not exist. Might wanna create it again first!");
+        } finally {
+            em.close();
+        }
+    }
+    
+    public RecipeDTO searchRecipeByID(Long id) {
+        EntityManager em = emf.createEntityManager();
+        try{
+            Recipe query = em.createQuery("SELECT r FROM Recipe r WHERE r.id = :id", Recipe.class)
+                .setParameter("id", id) 
+                .getSingleResult();
+            RecipeDTO result = new RecipeDTO(query);
+            return result;
+        } finally {
+            em.close();
+        }
+    }
+    
+    public RecipeDTO searchRecipeByName(String name) {
+        EntityManager em = emf.createEntityManager();
+        try{
+            Recipe query = em.createQuery("SELECT r FROM Recipe r WHERE r.recipeName = :name", Recipe.class)
+                .setParameter("name", name)    
+                .getSingleResult();
+            RecipeDTO result = new RecipeDTO(query);
+            return result;
         } finally {
             em.close();
         }
