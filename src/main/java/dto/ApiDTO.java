@@ -6,13 +6,10 @@ public class ApiDTO {
 
     private String chuckJoke;
     private String chuckJokeID;
-    private final String chuckURL = IngredientDTO.getRANDOM_URL();
     private String dadJoke;
     private String dadJokeID;
-    private final String dadURL = ItemDTO.getRANDOM_URL();
     private String jokeSetup;
     private String jokePunchLine;
-    private final String jokeURL = StorageDTO.getJOKE_URL();
 
     private final static String COULD_NOT_FETCH = "Could not fetch this data";
 
@@ -73,21 +70,5 @@ public class ApiDTO {
 
     public void setDadJokeID(String dadJokeID) {
         this.dadJokeID = dadJokeID;
-    }
-
-    public String getChuckUrl() {
-        return chuckURL;
-    }
-
-    public String getDadUrl() {
-        return dadURL;
-    }
-
-    public String getChuckURL() {
-        return chuckURL;
-    }
-
-    public String getDadURL() {
-        return dadURL;
     }
 }

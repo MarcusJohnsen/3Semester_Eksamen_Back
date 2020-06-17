@@ -93,12 +93,6 @@ public class RecipeFacadeTest {
             em.close();
         }
         recipeArray = new Recipe[]{rec1, rec2, rec3};
-        /*highestId = 0L;
-        for (InternalJoke joke : jokes) {
-            if (joke.getId() > highestId) {
-                highestId = joke.getId();
-            }
-        } */
     }
 
     @AfterEach
@@ -189,5 +183,46 @@ public class RecipeFacadeTest {
         } finally {
             em.close();
         }
+    }
+    
+    @Test
+    public void testGetRecipeByID() {
+        Recipe usedRecipe = rec2;
+        RecipeDTO result = facade.searchRecipeByID(usedRecipe.getId());
+        
+        assertEquals(usedRecipe.getId(), result.getId());
+        assertEquals(usedRecipe.getPreparationTime(), result.getPreparationTime());
+    }
+    
+    @Test
+    public void testGetRecipeByName_1() {
+        Recipe usedRecipe = rec1;
+        RecipesDTO result = facade.searchRecipesByName(usedRecipe.getRecipeName());
+        
+        //eftersom vi ved vi kun har én med det pågældende navn
+        int expectedResult = 1;
+        
+        assertEquals(expectedResult, result.getRecipes().size());
+    }
+    
+    @Test
+    public void testGetRecipeByName_2() {
+        Recipe usedRecipe = rec1;
+        
+        EntityManager em = emf.createEntityManager();
+        try {
+            em.getTransaction().begin();
+            Recipe rec4 = new Recipe(usedRecipe.getRecipeName(), "ca. 20 min", "Cook until al dente!");
+            em.persist(rec4);
+            em.getTransaction().commit();
+        } finally {
+            em.close();
+        }
+        RecipesDTO result = facade.searchRecipesByName(usedRecipe.getRecipeName());
+        
+        //eftersom vi ved vi nu har 2 med samme navn
+        int expectedResult = 2;
+        
+        assertEquals(expectedResult, result.getRecipes().size());
     }
 }

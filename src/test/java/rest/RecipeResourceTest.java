@@ -11,7 +11,6 @@ import static io.restassured.RestAssured.given;
 import io.restassured.http.ContentType;
 import io.restassured.parsing.Parser;
 import java.net.URI;
-import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.core.UriBuilder;
@@ -26,6 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import utils.EMF_Creator;
 
@@ -73,6 +73,7 @@ public class RecipeResourceTest {
             em.createNamedQuery("Recipe.deleteAllRows").executeUpdate();
             em.createQuery("DELETE FROM User").executeUpdate();
             em.createQuery("DELETE FROM Role").executeUpdate();
+            em.createQuery("DELETE FROM WeeklyMenuPlan").executeUpdate();
             p1 = "123456";
             p2 = "TopSecretPassword";
             u1 = new User("Mark", p1);
@@ -117,6 +118,7 @@ public class RecipeResourceTest {
             em.createNamedQuery("Recipe.deleteAllRows").executeUpdate();
             em.createQuery("DELETE FROM User").executeUpdate();
             em.createQuery("DELETE FROM Role").executeUpdate();
+            em.createQuery("DELETE FROM WeeklyMenuPlan").executeUpdate();
             em.getTransaction().commit();
         } finally {
             em.close();
@@ -309,8 +311,8 @@ public class RecipeResourceTest {
     
     //endpointet virker ikke, men lader det stå så man kan se hvad min intention var..
     //facade-metoden derimod virker, kan bare ikke få dette til at virke.
-    
-    /*@Test
+    @Disabled
+    @Test
     public void testAddRecipeToWeeklyPlan() {
         User user = u2;
         RecipeDTO newRecipe = new RecipeDTO("Svensk pølsret", "30 min", "pølser + kartofler");
@@ -336,5 +338,41 @@ public class RecipeResourceTest {
         } finally {
             em.close();
         }
-    }*/
+    }
+    
+    @Test
+    public void testGetRecipeByID() {
+        Recipe searchedRecipe = rec1;
+        User user = u1;
+        login(user.getUserName(), p1);
+
+        RecipeDTO result = given()
+                .contentType("application/json")
+                .header("x-access-token", securityToken)
+                .when()
+                .get("/rec/allByID/"+searchedRecipe.getId()).then()
+                .statusCode(200)
+                .extract().body().as(RecipeDTO.class);
+
+        assertEquals(searchedRecipe.getDirections(), result.getDirections());
+        assertEquals(searchedRecipe.getPreparationTime(), result.getPreparationTime());
+    }
+    
+    @Test
+    public void testGetRecipesByName() {
+        Recipe searchedRecipe = rec1;
+        User user = u2;
+        login(user.getUserName(), p2);
+
+        RecipesDTO result = given()
+                .contentType("application/json")
+                .header("x-access-token", securityToken)
+                .when()
+                .get("/rec/allByName/"+searchedRecipe.getRecipeName()).then()
+                .statusCode(200)
+                .extract().body().as(RecipesDTO.class);
+
+        int expectedSize = 1;
+        assertEquals(expectedSize, result.getRecipes().size());
+    }
 }

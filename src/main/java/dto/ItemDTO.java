@@ -2,7 +2,6 @@ package dto;
 
 public class ItemDTO {
     
-    private final static String RANDOM_URL = "https://icanhazdadjoke.com";
     private String joke;
     private String id;
 
@@ -29,9 +28,4 @@ public class ItemDTO {
     public void setId(String id) {
         this.id = id;
     }
-
-    public static String getRANDOM_URL() {
-        return RANDOM_URL;
-    }
-    
 }

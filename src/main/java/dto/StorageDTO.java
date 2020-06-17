@@ -2,7 +2,6 @@ package dto;
 
 public class StorageDTO {
     
-    private final static String JOKE_URL = "https://official-joke-api.appspot.com/random_joke";
     private String id;
     private String type;
     private String setup;
@@ -49,11 +48,4 @@ public class StorageDTO {
     public void setPunchline(String punchline) {
         this.punchline = punchline;
     }
-
-    public static String getJOKE_URL() {
-        return JOKE_URL;
-    }
-    
-    
-    
 }

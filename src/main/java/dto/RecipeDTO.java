@@ -1,6 +1,7 @@
 package dto;
 
 import entities.Recipe;
+import java.util.List;
 
 public class RecipeDTO {
     
@@ -8,6 +9,7 @@ public class RecipeDTO {
     private String recipeName;
     private String preparationTime;
     private String directions;
+    List<IngredientDTO> ingredients;
 
     public RecipeDTO() {}
     
@@ -29,9 +31,9 @@ public class RecipeDTO {
         this.recipeName = recipe.getRecipeName();
         this.preparationTime = recipe.getPreparationTime();
         this.directions = recipe.getDirections();
+        this.ingredients = recipe.getIngredientsDTO();
     }
     
-
     public Long getId() {
         return id;
     }
@@ -62,5 +64,13 @@ public class RecipeDTO {
 
     public void setDirections(String directions) {
         this.directions = directions;
+    }
+
+    public List<IngredientDTO> getIngredients() {
+        return ingredients;
+    }
+
+    public void setIngredients(List<IngredientDTO> ingredients) {
+        this.ingredients = ingredients;
     }
 }

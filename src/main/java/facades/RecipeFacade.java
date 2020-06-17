@@ -1,10 +1,13 @@
 package facades;
 
+import dto.IngredientDTO;
 import dto.RecipeDTO;
 import dto.RecipesDTO;
+import entities.Ingredient;
 import entities.Recipe;
 import entities.WeeklyMenuPlan;
 import errorhandling.InvalidInputException;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -47,6 +50,27 @@ public class RecipeFacade {
             List<Recipe> dbList = query.getResultList();
             RecipesDTO result = new RecipesDTO(dbList);
             return result;
+        } finally {
+            em.close();
+        }
+    }
+    
+    //trying to also get ingredients displayed on each recipe
+    public List<RecipeDTO> getRecipesWithIngredients() {
+        EntityManager em = emf.createEntityManager();
+        List<RecipeDTO> recipeList = new ArrayList();
+        List<IngredientDTO> ingredientlist = new ArrayList();
+        try {
+            TypedQuery<Recipe> query = em.createQuery("SELECT r FROM Recipe r", Recipe.class);
+            for (Recipe rec : query.getResultList()) {
+                for(Ingredient ing : rec.getIngredientList()) {
+                    ingredientlist.add(new IngredientDTO(ing));
+                }
+                RecipeDTO recDTO = new RecipeDTO(rec);
+                recDTO.setIngredients(ingredientlist);
+                recipeList.add(recDTO);
+            }
+            return recipeList;
         } finally {
             em.close();
         }
@@ -128,13 +152,14 @@ public class RecipeFacade {
         }
     }
     
-    public RecipeDTO searchRecipeByName(String name) {
+    //vælger at sige man godt kan have flere recipes med samme navn, selvom man nok ikke har det
+    public RecipesDTO searchRecipesByName(String name) {
         EntityManager em = emf.createEntityManager();
         try{
-            Recipe query = em.createQuery("SELECT r FROM Recipe r WHERE r.recipeName = :name", Recipe.class)
-                .setParameter("name", name)    
-                .getSingleResult();
-            RecipeDTO result = new RecipeDTO(query);
+            TypedQuery<Recipe> query = em.createQuery("SELECT r FROM Recipe r WHERE r.recipeName = :name", Recipe.class)
+                .setParameter("name", name); 
+            List<Recipe> dbList = query.getResultList();
+            RecipesDTO result = new RecipesDTO(dbList);
             return result;
         } finally {
             em.close();

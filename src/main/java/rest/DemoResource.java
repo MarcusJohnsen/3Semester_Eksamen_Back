@@ -86,9 +86,6 @@ public class DemoResource {
     public String getFromExternalAPI() {
 
         String[] fetchStrings = new String[]{
-            IngredientDTO.getRANDOM_URL(),
-            ItemDTO.getRANDOM_URL(),
-            StorageDTO.getJOKE_URL()
         };
         String[] fetched = new String[fetchStrings.length];
         ExecutorService workingJack = Executors.newFixedThreadPool(fetchStrings.length);

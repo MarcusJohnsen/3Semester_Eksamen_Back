@@ -1,8 +1,9 @@
 package dto;
 
+import entities.Ingredient;
+
 public class IngredientDTO {
     
-    private final static String RANDOM_URL = "https://api.chucknorris.io/jokes/random";
     private String value;
     private String id;
 
@@ -13,9 +14,10 @@ public class IngredientDTO {
         this.value = value;
         this.id = id;
     }
-
-    public static String getRANDOM_URL() {
-        return RANDOM_URL;
+    
+    public IngredientDTO(Ingredient ingredient) {
+        this.value = value;
+        this.id = id;
     }
 
     public String getValue() {
@@ -33,7 +35,4 @@ public class IngredientDTO {
     public void setId(String id) {
         this.id = id;
     }
-    
-    
-    
 }

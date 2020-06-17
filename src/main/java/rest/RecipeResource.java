@@ -7,6 +7,7 @@ import dto.RecipesDTO;
 import errorhandling.InvalidInputException;
 import utils.EMF_Creator;
 import facades.RecipeFacade;
+import java.util.List;
 import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.Consumes;
@@ -58,6 +59,15 @@ public class RecipeResource {
         return GSON.toJson(allRecipes);
     }
     
+    @GET
+    @Path("allWithIng")
+    @RolesAllowed({"user", "admin"})
+    @Produces({MediaType.APPLICATION_JSON})
+    public String getAllRecipesWithIngredients() {
+        List<RecipeDTO> allRecipes = FACADE.getRecipesWithIngredients();
+        return GSON.toJson(allRecipes);
+    }
+    
     @PUT
     @Path("/edit")
     @RolesAllowed({"admin"})
@@ -73,19 +83,37 @@ public class RecipeResource {
     @RolesAllowed({"admin"})
     @Produces({MediaType.APPLICATION_JSON})
     @Consumes({MediaType.APPLICATION_JSON})
-    public void deleteRecipe(@PathParam("id")long id) {
+    public void deleteRecipe(@PathParam("id") Long id) {
         FACADE.deleteRecipe(id);
+    }
+    
+    @GET
+    @Path("allByID/{id}")
+    @RolesAllowed({"user", "admin"})
+    @Produces({MediaType.APPLICATION_JSON})
+    public String getRecipeByID(@PathParam("id") Long id) {
+        RecipeDTO matchingRecipe = FACADE.searchRecipeByID(id);
+        return GSON.toJson(matchingRecipe);
+    }
+    
+    @GET
+    @Path("allByName/{recipeName}")
+    @RolesAllowed({"admin"})
+    @Produces({MediaType.APPLICATION_JSON})
+    public String getRecipesByName(@PathParam("recipeName") String recipeName) {
+        RecipesDTO matchingRecipes = FACADE.searchRecipesByName(recipeName);
+        return GSON.toJson(matchingRecipes);
     }
     
     //opgaven siger "the chef" gerne vil.. jeg antager han er admin
     //jeg er ikke i tvivl om dette er... uskøn kode, men det bedste jeg kunne finde på under presset
-    @PUT
+    /*@PUT
     @Path("/weeklyPlan/{id}")
     @RolesAllowed({"admin"})
     @Produces({MediaType.APPLICATION_JSON})
-    public String addRecipeToWeeklyPlan(@PathParam("id")long id, String recipe) throws InvalidInputException {
+    public String addRecipeToWeeklyPlan(@PathParam("id") Long id, String recipe) throws InvalidInputException {
         RecipeDTO addedRecipe = GSON.fromJson(recipe, RecipeDTO.class);
         RecipeDTO recipeResult = FACADE.addRecipeToWeeklyMenuPlan(id, addedRecipe.getId());
         return GSON.toJson(recipeResult);
-    }
+    }*/
 }

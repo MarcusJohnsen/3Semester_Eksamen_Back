@@ -1,5 +1,6 @@
 package entities;
 
+import dto.IngredientDTO;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -86,6 +87,14 @@ public class Recipe implements Serializable {
 
     public void setIngredientList(List<Ingredient> ingredientList) {
         this.ingredientList = ingredientList;
+    }
+    
+    public List<IngredientDTO> getIngredientsDTO() {
+        List<IngredientDTO> ingList = new ArrayList(); 
+        for(Ingredient ing : ingredientList) {
+            IngredientDTO ingDTO = new IngredientDTO(ing);
+        }
+        return ingList;
     }
 
     public List<WeeklyMenuPlan> getWeeklyPlanList() {
